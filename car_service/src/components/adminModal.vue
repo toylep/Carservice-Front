@@ -27,20 +27,15 @@ const user = JSON.parse(localStorage.getItem('user'))
         class="ms-1 d-none d-sm-inline"
         aria-current="page"
         data-bs-toggle="modal"
-        data-bs-target="#add"
+        data-bs-target="#addCar"
         >Добавить машину
         </span>
 
-		<!-- Modal for Login -->
 		<div>
-			<form 
-			ref="CarAddForm"
-			method="post"
-			@submit.prevent="()=>alert('hmmm')"
-			>
+			<form @submit.prevent="addCar">
 				<div
 					class="modal fade"
-					id="add"
+					id="addCar"
 					data-bs-backdrop="static"
 					data-bs-keyboard="false"
 					tabindex="-1"
@@ -65,44 +60,58 @@ const user = JSON.parse(localStorage.getItem('user'))
 									<label for="exampleInputCarMark">Введите марку</label>
 									<input
 										class="form-control"
-										id="exampleInputUsername"
+										id="exampleInputCarMark"
 										placeholder="Username"
 										v-model="carHolder.mark"
 									/>
 								</div>
 								<div class="form-group">
-									<label for="exampleInputCarMark">Введите модель</label>
+									<label for="exampleInputCarModel">Введите модель</label>
 									<input
 										class="form-control"
-										id="exampleInputUsername"
+										id="exampleInputCarModel"
 										placeholder="Username"
 										v-model="carHolder.model"
 									/>
 								</div>
                                 <div class="form-group">
-									<label for="exampleInputCarMark">Введите описание</label>
+									<label for="exampleInputCarDesc">Введите описание</label>
 									<input
 										class="form-control"
-										id="exampleInputUsername"
+										id="exampleInputCarDesc"
 										placeholder="Username"
 										v-model="carHolder.description"
 									/>
 								</div>
                                 <div class="form-group">
-									<label for="exampleInputCarMark">Добавьте урлу картинки</label>
+									<label for="exampleInputCarPic">Добавьте урлу картинки</label>
 									<input
 										class="form-control"
-										id="exampleInputUsername"
+										id="exampleInputCarPic"
 										placeholder="Username"
 										v-model="carHolder.picture"
 									/>
 								</div>
-								<button type="submit" class="btn btn-primary">
+								<div class="form-group">
+									<label for="exampleInputCarСategory">Добавьте категорию</label>
+									<input
+										class="form-control"
+										id="exampleInputCarСategory"
+										placeholder="Категория"
+										v-model="carHolder.category"
+									/>
+								</div>
+								<button 
+								action="/" 
+								class="btn btn-primary" 
+								type="submit"
+								data-bs-target="#addCar"
+								data-bs-toggle="modal"
+								@click="addCar"
+								>
 									Добавить
 								</button>
-								<!-- ... Other form elements ... -->
 							</div>
-							<!-- ... Modal footer ... -->
 						</div>
 					</div>
 				</div>

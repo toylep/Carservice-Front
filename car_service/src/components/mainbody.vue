@@ -13,13 +13,8 @@ export default {
     },
     methods: {
         async getCars() {
-            // console.log(localStorage.getItem('user'))
             const response = await fetch(this.url + '/cars/', {
-            // headers:{
-            //     authHeader
-            // }
             });
-            // console.log(authHeader);
             const data = await response.json();
             this.cars = data;
         },
@@ -53,13 +48,13 @@ export default {
 		/>
 	</head>
 		<div>
-			<div class="wrapper">
+			<div >
 
-				<div v-for="car,index in cars">
+				<div class="wrapper" v-for="car,index in cars">
 					<div
 						class="card"
-						style="width: 18rem; border-color: black"
-						v-if="this.user.is_staff == false && index<5"
+						style="width: 18rem; border-color: black;margin: 10px;"
+						v-if="this.user.is_staff == false"
 					>
 						<img :src="car.picture" class="card-img-top" style="height: 200px;"/>
 						<div class="card-body bg-dark">
@@ -72,7 +67,6 @@ export default {
 					</div>
 					<div class="card" style="width: 18rem; border-color: black" 
 					v-else
-					v-if="index<5"
 					>
 						<img :src="car.picture" class="card-img-top" style="height: 200px;"/>
 						<div class="card-body bg-dark">
@@ -98,8 +92,10 @@ export default {
 </template>
 <style>
 	.wrapper{
-		display: grid;
-		grid-template-columns: repeat(auto-fill,minmax(18rem,1fr));
+		display: flex;
+		flex-wrap: wrap;
+		gap: 16px;
+		flex-direction:column-reverse;
 	}
 
 </style>

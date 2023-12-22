@@ -62,7 +62,7 @@ export default {
 									class="nav-link px-0 align-middle"
 								>
 									<i class="fs-4 bi-speedometer2"></i>
-									<AdminModal></AdminModal>
+									<AdminModal/>
 								</a>
 								<a
 									href="#submenu2"
@@ -91,7 +91,7 @@ export default {
 						<hr />
 					</div>
 				</div>
-				<div>
+				<div >
 					<mainbody/>
 				</div>
 			</div>
