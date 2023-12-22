@@ -30,9 +30,9 @@ const authUser = async () => {
 			`${authHolder.username.value}:${authHolder.password.value}`
 		)
 		localStorage.setItem('authData', JSON.stringify(authData))
-
+		console.log(`http://localhost:8000/users/${authHolder.username}`)
 		const response = await axios.get(
-			`http://localhost:8000/users/${authHolder.username.value}`
+			`http://localhost:8000/users/${authHolder.username}`
 		)
 		const userData = response.data
 
@@ -46,7 +46,6 @@ const authUser = async () => {
 const getCars = () => {
 	// Implement logic to get cars if needed
 }
-onMounted(getCars)
 </script>
 
 <template>
