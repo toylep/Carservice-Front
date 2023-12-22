@@ -50,38 +50,41 @@ export default {
 			crossorigin="anonymous"
 		/>
 	</head>
-	<div class="col py-3" v-for="car in cars">
-		<div class="container-lg">
-			<div>
-				<div
-					class="card"
-					style="width: 18rem; border-color: black"
-					v-if="this.user.is_staff == false"
-				>
-					<img :src="car.picture" class="card-img-top" alt="..." />
-					<div class="card-body bg-dark">
-						<h5 class="card-title" style="color: white">
-							{{ car.mark }} {{ car.model }}
-						</h5>
-						<p class="card-text" style="color: white">{{ car.description }}</p>
-						<a href="#" class="btn btn-primary">Арендовать</a>
+		<div class="container-lg" >
+			<div class="row">
+				<div class="col-sm" v-for="car,index in cars">
+					<div
+						class="card"
+						style="width: 18rem; border-color: black"
+						v-if="this.user.is_staff == false && index<5"
+					>
+						<img :src="car.picture" class="card-img-top" style="height: 200px;"/>
+						<div class="card-body bg-dark">
+							<h5 class="card-title" style="color: white">
+								{{ car.mark }} {{ car.model }}
+							</h5>
+							<p class="card-text" style="color: white">{{ car.description }}</p>
+							<a href="#" class="btn btn-primary">Арендовать</a>
+						</div>
 					</div>
-				</div>
-				<div class="card" style="width: 18rem; border-color: black" v-else>
-					<img :src="car.picture" class="card-img-top" alt="..." />
-					<div class="card-body bg-dark">
-						<h5 class="card-title" style="color: white">
-							{{ car.mark }} {{ car.model }}
-						</h5>
-						<p class="card-text" style="color: white">{{ car.description }}</p>
-						<a href="#" class="btn btn-primary">Арендовать</a>
-						<br />
-						<br />
-						<a href="" class="btn btn-secondary">Изменить</a>
-						<a class="btn btn-danger" @click="deleteCar(car.id)">Удалить</a>
+					<div class="card" style="width: 18rem; border-color: black" 
+					v-else
+					v-if="index<5"
+					>
+						<img :src="car.picture" class="card-img-top" style="height: 200px;"/>
+						<div class="card-body bg-dark">
+							<h5 class="card-title" style="color: white">
+								{{ car.mark }} {{ car.model }}
+							</h5>
+							<p class="card-text" style="color: white">{{ car.description }}</p>
+							<a href="#" class="btn btn-primary">Арендовать</a>
+							<br />
+							<br />
+							<a href="" class="btn btn-secondary">Изменить</a>
+							<a class="btn btn-danger" @click="deleteCar(car.id)">Удалить</a>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 </template>

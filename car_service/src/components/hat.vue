@@ -1,6 +1,5 @@
 <script>
 import loginwWindow from './loginwWindow.vue';
-
 export default{
     name:'hat',
     components:{
@@ -20,14 +19,13 @@ export default{
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             
         </ul>
-        <li class="nav-item">
+          <li class="nav-item">
             <loginwWindow/>
             </li>
             <li class="nav-item">
             <a class="nav-link" href="https://github.com/toylep/">Обо мне</a>
             </li>
             <li class="nav-item">
-            <a class="nav-link">Админская панель</a>
             </li>
 
         </div>

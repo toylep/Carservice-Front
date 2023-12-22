@@ -7,8 +7,8 @@ const userHolder = {
 	name: ref(''),
 	password: ref(''),
 	email: ref(''),
-	is_staff: ref(false),
-	balance: ref(0),
+	is_staff: false,
+	balance: 0,
 }
 
 const authHolder = {
@@ -18,6 +18,7 @@ const authHolder = {
 
 const regUser = async () => {
 	try {
+		console.log(userHolder)
 		await axios.post('http://localhost:8000/users/reg/', userHolder)
 	} catch (error) {
 		console.error('Error registering user:', error)
@@ -109,6 +110,12 @@ const getCars = () => {
 									Авторизоваться
 								</button>
 							</div>
+							<button
+							class="btn btn-primary"
+							data-bs-target="#register"
+							data-bs-toggle="modal"
+							 >	Еще нет аккаунта?
+							</button>
 							<!-- ... Modal footer ... -->
 						</div>
 					</div>
@@ -143,11 +150,52 @@ const getCars = () => {
 							</div>
 							<div class="modal-body">
 								<div class="form-group">
+									<label for="exampleInputName">Как к вам обращаться?</label>
+									<input
+										class="form-control"
+										id="exampleInputName"
+										placeholder="Username"
+										v-model="userHolder.name"
+									/>
+								</div>
+								<div class="form-group">
+									<label for="exampleInputUsername">Ваш юзернейм</label>
+									<input
+										class="form-control"
+										id="exampleInputUsername"
+										placeholder="Ваш username"
+										v-model="userHolder.username"
+									/>
+								</div>
+								<div class="form-group">
+									<label for="exampleInputUsername">Ваш email</label>
+									<input
+										class="form-control"
+										id="exampleInputEmail"
+										placeholder="Username"
+										v-model="userHolder.email"
+									/>
+								</div>
+								<div class="form-group">
+									<label for="exampleInputPassword">Password</label>
+									<input
+										type="password"
+										class="form-control"
+										id="exampleInputPassword"
+										placeholder="Password"
+										v-model="userHolder.password"
+									/>
 									<!-- ... Rest of the form elements for registration ... -->
 								</div>
 								<button class="btn btn-primary">Зарегистрироваться</button>
 							</div>
 							<!-- ... Modal footer ... -->
+							<button
+							class="btn btn-primary"
+							data-bs-target="#login"
+							data-bs-toggle="modal"
+							 >	Уже есть аккаунт?
+							</button>
 						</div>
 					</div>
 				</div>

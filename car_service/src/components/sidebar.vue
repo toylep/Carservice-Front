@@ -1,13 +1,13 @@
 <script>
 import axios from 'axios'
-import LoginwWindow from './loginwWindow.vue'
 import mainbody from './mainbody.vue'
+import AdminModal from './adminModal.vue'
 export default {
 	name: 'sidebar',
 	components: {
-		mainbody,
-		LoginwWindow,
-	},
+    mainbody,
+    AdminModal
+},
 	data() {
 		return {
 			categories: [],
@@ -58,6 +58,14 @@ export default {
 							<li>
 								<a
 									href="#submenu1"
+									data-bs-toggle="collapse"
+									class="nav-link px-0 align-middle"
+								>
+									<i class="fs-4 bi-speedometer2"></i>
+									<AdminModal></AdminModal>
+								</a>
+								<a
+									href="#submenu2"
 									data-bs-toggle="collapse"
 									class="nav-link px-0 align-middle"
 								>
