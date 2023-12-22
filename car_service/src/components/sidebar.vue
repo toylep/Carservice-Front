@@ -92,7 +92,7 @@ export default {
 					</div>
 				</div>
 				<div>
-					<mainbody />
+					<mainbody/>
 				</div>
 			</div>
 		</div>

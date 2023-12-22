@@ -1,43 +1,45 @@
 <script>
 import axios from 'axios'
+import Rents from './rents.vue';
 
 export default {
-	name: 'mainbody',
-	data() {
-		return {
-			url: 'http://localhost:8000',
-			cars: [],
-			user: JSON.parse(localStorage.getItem('user')),
-		}
-	},
-	methods: {
-		async getCars() {
-			// console.log(localStorage.getItem('user'))
-			const response = await fetch(this.url + '/cars/', {
-				// headers:{
-				//     authHeader
-				// }
-			})
-			// console.log(authHeader);
-			const data = await response.json()
-			this.cars = data
-		},
-		async deleteCar(id) {
-			await axios.delete(this.url + '/cars/' + id)
-			this.getCars()
-		},
-		async createCar(mark, model, description) {
-			await axios.post(this.url + '/cars/', {
-				mark: mark,
-				model: model,
-				description: description,
-			})
-		},
-	},
-	created() {
-		this.getCars()
-		// console.log(this.user);
-	},
+    name: 'mainbody',
+    data() {
+        return {
+            url: 'http://localhost:8000',
+            cars: [],
+            user: JSON.parse(localStorage.getItem('user')),
+        };
+    },
+    methods: {
+        async getCars() {
+            // console.log(localStorage.getItem('user'))
+            const response = await fetch(this.url + '/cars/', {
+            // headers:{
+            //     authHeader
+            // }
+            });
+            // console.log(authHeader);
+            const data = await response.json();
+            this.cars = data;
+        },
+        async deleteCar(id) {
+            await axios.delete(this.url + '/cars/' + id);
+            this.getCars();
+        },
+        async createCar(mark, model, description) {
+            await axios.post(this.url + '/cars/', {
+                mark: mark,
+                model: model,
+                description: description,
+            });
+        },
+    },
+    created() {
+        this.getCars();
+        // console.log(this.user);
+    },
+    components: { Rents, Rents }
 }
 </script>
 
@@ -50,9 +52,10 @@ export default {
 			crossorigin="anonymous"
 		/>
 	</head>
-		<div class="container-lg" >
-			<div class="row">
-				<div class="col-sm" v-for="car,index in cars">
+		<div>
+			<div class="wrapper">
+
+				<div v-for="car,index in cars">
 					<div
 						class="card"
 						style="width: 18rem; border-color: black"
@@ -86,5 +89,17 @@ export default {
 					</div>
 				</div>
 			</div>
+			
 		</div>
+		<div>
+			<Rents></Rents>
+		</div>
+		
 </template>
+<style>
+	.wrapper{
+		display: grid;
+		grid-template-columns: repeat(auto-fill,minmax(18rem,1fr));
+	}
+
+</style>

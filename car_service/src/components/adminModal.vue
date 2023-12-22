@@ -32,7 +32,12 @@ const user = JSON.parse(localStorage.getItem('user'))
         </span>
 
 		<!-- Modal for Login -->
-			<form @submit.prevent="addCar">
+		<div>
+			<form 
+			ref="CarAddForm"
+			method="post"
+			@submit.prevent="()=>alert('hmmm')"
+			>
 				<div
 					class="modal fade"
 					id="add"
@@ -92,16 +97,17 @@ const user = JSON.parse(localStorage.getItem('user'))
 										v-model="carHolder.picture"
 									/>
 								</div>
-								<!-- ... Other form elements ... -->
 								<button type="submit" class="btn btn-primary">
 									Добавить
 								</button>
+								<!-- ... Other form elements ... -->
 							</div>
 							<!-- ... Modal footer ... -->
 						</div>
 					</div>
 				</div>
 			</form>
+		</div>
     </div>
 
 </template>
