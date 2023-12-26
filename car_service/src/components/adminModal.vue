@@ -3,33 +3,42 @@
 import axios from 'axios'
 import { ref } from 'vue'
 
+const auth = JSON.parse(localStorage.getItem('auth'))
 const carHolder = {
-    mark: ref(''),
-	model: ref(''),
-	description: ref(''),
-	category: ref(''),
-    picture: ref(''),
+    mark: '',
+	model: '',
+	description: '',
+	category:'',
+    picture: '',
 }
+let categories = []
 const addCar = async ()=>{
 	try{
-		console.log('1')
-		await axios.post('http://localhost:8000/cars/',carHolder)
+		console.log(carHolder)
+		await axios.post('/cars/',carHolder,
+		{
+			auth:{
+				username:auth.username,
+				password:auth.password,
+			},
+		}
+		)
 	}catch(err){
-		console.log(err)
+		console.log('Машина не создается')
 	}
 }
-const user = JSON.parse(localStorage.getItem('user'))
+const user = JSON.parse(localStorage.getItem('user')) ? JSON.parse(localStorage.getItem('user')) : []
 </script>
 
 <template>
     <div>
-        <span v-if="user.is_staff===true"
+        <h5 v-if="user.is_staff===true"
         class="ms-1 d-none d-sm-inline"
         aria-current="page"
         data-bs-toggle="modal"
         data-bs-target="#addCar"
         >Добавить машину
-        </span>
+	</h5>
 
 		<div>
 			<form @submit.prevent="addCar">
@@ -61,7 +70,7 @@ const user = JSON.parse(localStorage.getItem('user'))
 									<input
 										class="form-control"
 										id="exampleInputCarMark"
-										placeholder="Username"
+										placeholder="Марка"
 										v-model="carHolder.mark"
 									/>
 								</div>
@@ -70,7 +79,7 @@ const user = JSON.parse(localStorage.getItem('user'))
 									<input
 										class="form-control"
 										id="exampleInputCarModel"
-										placeholder="Username"
+										placeholder="Модель"
 										v-model="carHolder.model"
 									/>
 								</div>
@@ -79,7 +88,7 @@ const user = JSON.parse(localStorage.getItem('user'))
 									<input
 										class="form-control"
 										id="exampleInputCarDesc"
-										placeholder="Username"
+										placeholder="Ну какое-нибудь описание"
 										v-model="carHolder.description"
 									/>
 								</div>
@@ -88,18 +97,17 @@ const user = JSON.parse(localStorage.getItem('user'))
 									<input
 										class="form-control"
 										id="exampleInputCarPic"
-										placeholder="Username"
+										placeholder="url"
 										v-model="carHolder.picture"
 									/>
 								</div>
 								<div class="form-group">
 									<label for="exampleInputCarСategory">Добавьте категорию</label>
-									<input
-										class="form-control"
-										id="exampleInputCarСategory"
-										placeholder="Категория"
-										v-model="carHolder.category"
-									/>
+									<select class="form-select" aria-label="Default select example" v-model="carHolder.category">
+										<option value="1">Дорогая</option>
+										<option value="2">Средняя</option>
+										<option value="3">Дешевая</option>
+									</select>
 								</div>
 								<button 
 								action="/" 

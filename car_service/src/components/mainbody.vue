@@ -1,40 +1,69 @@
-<script>
+<script setup>
 import axios from 'axios'
 import Rents from './rents.vue'
+import { onMounted, ref } from 'vue';
+import { reactive } from 'vue';
+axios.defaults.baseURL = 'http://localhost:8000';
+axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
+axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+axios.defaults.withCredentials = true
+var cars = ref([])
+let user = JSON.parse(localStorage.getItem('user'))
 
-export default {
-	name: 'mainbody',
-	data() {
-		return {
-			url: 'http://localhost:8000',
-			cars: [],
-			user: JSON.parse(localStorage.getItem('user')),
-		}
-	},
-	methods: {
-		async getCars() {
-			const response = await fetch(this.url + '/cars/', {})
-			const data = await response.json()
-			this.cars = data
-		},
-		async deleteCar(id) {
-			await axios.delete(this.url + '/cars/' + id)
-			this.getCars()
-		},
-		async createCar(mark, model, description) {
-			await axios.post(this.url + '/cars/', {
-				mark: mark,
-				model: model,
-				description: description,
-			})
-		},
-	},
-	created() {
-		this.getCars()
-		// console.log(this.user);
-	},
-	components: { Rents, Rents },
+let auth = JSON.parse(localStorage.getItem('auth'))
+// const getHeader = async ()=>{
+// 	console.log(localStorage.getItem('header'))
+// 	authHeader = localStorage.getItem('header')
+// }
+const rentCar = async (car_id) => {
+	try{
+
+		await axios.post('/cars/rent/', {
+			auth:{
+			username:auth.username,
+			password:auth.password
+			},
+			car: car_id,
+			client: user.id,
+		})
+	}catch(err){
+		alert('Эта машина уже арендована')
+	}
 }
+const getCars = async ()=>{
+	try{
+		const response = await axios.get(
+			'/cars/', {
+		auth:{
+			username:auth.username,
+			password:auth.password
+		}
+		})
+		console.log(response.data)
+		response.data.forEach(element => {
+			cars.value.unshift(element)
+		});
+		console.log(cars)
+	}catch(err){
+		console.log('hmm')
+		console.log(err)
+
+	}
+}
+
+const deleteCar= async (id) =>{
+	await axios.delete('/cars/' + id,{
+		auth:{
+			username:auth.username,
+			password:auth.password
+			},
+	})
+	this.getCars()
+}
+onMounted(()=>{
+	getCars();
+	// getHeader();
+})
 </script>
 <template>
 	<div>
@@ -49,31 +78,34 @@ export default {
 
 		<div class="wrapper d-flex flex-wrap">
 			<div
-				v-for="car in cars"
-				:key="car.id"
-				class="card list flex-fill"
+				class="card list flex"
+				v-for="car,index in cars"
 				:style="{ width: '18rem', borderColor: 'black', margin: '10px' }"
 			>
-				<img :src="car.picture" class="card-img-top" style="height: 200px" />
+				<img :src="car.picture"  class="card-img-top" style="height: 200px" />
 				<div class="card-body bg-dark">
-					<h5 class="card-title" style="color: white">
+					<h5 class="card-title"  style="color: white">
 						{{ car.mark }} {{ car.model }}
 					</h5>
-					<p class="card-text" style="color: white">{{ car.description }}</p>
-					<a href="#" class="btn btn-primary" v-if="!user.is_staff"
-						>Арендовать</a
-					>
-					<template v-else>
-						<a href="#" class="btn btn-primary">Арендовать</a>
+					<p class="card-text" style="color: white" >{{ car.description }}</p>
+					<a  @click="rentCar(car.id)" class="btn btn-primary" :key="user.is_staff" v-if="!user.is_staff" >
+					Арендовать
+					</a>
+					<template
+					 v-else
+					 >
+					 <p class="card-text" style="color: white">Id машины - {{ car.id }} </p>
+						<a @click="rentCar(car.id)" class="btn btn-primary">Арендовать</a>
 						<br />
 						<br />
-						<a href="" class="btn btn-secondary">Изменить</a>
 						<a class="btn btn-danger" @click="deleteCar(car.id)">Удалить</a>
 					</template>
 				</div>
 			</div>
 		</div>
-		<div>
+		<div class="flex-wrap"
+		style="margin: 10px;"
+		>
 			<Rents></Rents>
 		</div>
 	</div>

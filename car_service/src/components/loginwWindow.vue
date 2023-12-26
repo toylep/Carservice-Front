@@ -1,7 +1,6 @@
 <script setup>
 import axios from 'axios'
 import { ref } from 'vue'
-
 const userHolder = {
 	username: ref(''),
 	name: ref(''),
@@ -18,35 +17,36 @@ const authHolder = {
 
 const regUser = async () => {
 	try {
+		
 		console.log(userHolder)
 		await axios.post('http://localhost:8000/users/reg/', userHolder)
 	} catch (error) {
 		console.error('Error registering user:', error)
 	}
 }
-
 const authUser = async () => {
 	try {
 		const authData = window.btoa(
-			`${authHolder.username.value}:${authHolder.password.value}`
+			`${authHolder.username}:${authHolder.password}`
 		)
-		localStorage.setItem('authData', JSON.stringify(authData))
-		console.log(`http://localhost:8000/users/${authHolder.username}`)
+		
+		// localStorage.setItem('authData', JSON.stringify({authData}))
+		console.log(`http://localhost:8000/users/get/${authHolder.username}`)
 		const response = await axios.get(
-			`http://localhost:8000/users/${authHolder.username}`
+			`http://localhost:8000/users/get/${authHolder.username}`
 		)
-		const userData = response.data
+		const userData = response.data;
+		console.log(userData);
+		
+		localStorage.setItem('user', JSON.stringify(userData));
+		localStorage.setItem('auth', JSON.stringify(authHolder));
+		console.log(localStorage.getItem('header'));
 
-		localStorage.setItem('user', JSON.stringify(userData))
-		console.log(userData)
 	} catch (error) {
-		console.error('Error fetching user data:', error)
+		console.error('Error fetching user data:', error);
 	}
 }
 
-const getCars = () => {
-	// Implement logic to get cars if needed
-}
 </script>
 
 <template>
@@ -92,7 +92,7 @@ const getCars = () => {
 										class="form-control"
 										id="exampleInputUsername"
 										placeholder="Username"
-										v-model="authHolder.username"
+										v-model="authHolder.username.value"
 									/>
 								</div>
 								<div class="form-group">
@@ -102,11 +102,16 @@ const getCars = () => {
 										class="form-control"
 										id="exampleInputPassword1"
 										placeholder="Password"
-										v-model="authHolder.password"
+										v-model="authHolder.password.value"
 									/>
 								</div>
 								<!-- ... Other form elements ... -->
-								<button type="submit" class="btn btn-primary">
+								<button href="#" 
+								type="submit" 
+								class="btn btn-primary"
+								data-bs-target="#login"
+								data-bs-dismiss="modal"
+								>
 									Авторизоваться
 								</button>
 							</div>
@@ -155,7 +160,7 @@ const getCars = () => {
 										class="form-control"
 										id="exampleInputName"
 										placeholder="Username"
-										v-model="userHolder.name"
+										v-model="userHolder.name.value"
 									/>
 								</div>
 								<div class="form-group">
@@ -164,7 +169,7 @@ const getCars = () => {
 										class="form-control"
 										id="exampleInputUsername"
 										placeholder="Ваш username"
-										v-model="userHolder.username"
+										v-model="userHolder.username.value"
 									/>
 								</div>
 								<div class="form-group">
@@ -173,7 +178,7 @@ const getCars = () => {
 										class="form-control"
 										id="exampleInputEmail"
 										placeholder="Username"
-										v-model="userHolder.email"
+										v-model="userHolder.email.value"
 									/>
 								</div>
 								<div class="form-group">
@@ -183,12 +188,16 @@ const getCars = () => {
 										class="form-control"
 										id="exampleInputPassword"
 										placeholder="Password"
-										v-model="userHolder.password"
+										v-model="userHolder.password.value"
 									/>
 									<!-- ... Rest of the form elements for registration ... -->
 								</div>
-								<button class="btn btn-primary">Зарегистрироваться</button>
-							</div>
+								<button href="#"
+								class="btn btn-primary"
+								data-bs-dismiss="modal"
+								>Зарегистрироваться
+								</button>
+								</div>
 							<!-- ... Modal footer ... -->
 							<button
 							class="btn btn-primary"
