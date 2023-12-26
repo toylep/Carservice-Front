@@ -3,11 +3,20 @@ import axios from 'axios'
 import mainbody from './mainbody.vue'
 import AdminModal from './adminModal.vue'
 import { onMounted, ref } from 'vue';
-let user = ref(JSON.parse(localStorage.getItem('user'))).value
+let user = {
+	username:'demo',
+	password:'demo',
+	is_staff:false,
+}
+const getUser = async ()=>{
+	if (JSON.parse(localStorage.getItem('user')) != null){
+		user = JSON.parse(localStorage.getItem('user'))
+	}
+}
 let categories = ref([])
 const get_categories = async () => {
 	try {
-		const response = await axios.get('cars/category/')
+		const response = await axios.get('api/cars/category/')
 		response.data.forEach(element => {
 			categories.value.unshift(element)
 		});
@@ -17,6 +26,7 @@ const get_categories = async () => {
 }
 onMounted(() => {
 	get_categories()
+	getUser()
 })
 </script>
 
@@ -64,7 +74,7 @@ onMounted(() => {
 								<div id="home-collapse">
 									<hr/>
 									<ul class="collapse show nav flex-column ms-1" id="submenu1" data-bs-parent="#submenu2"
-										v-for="category in categories" 
+										v-for="category in categories.value" 
 										>
 										<li>
 											<span class="d-none d-sm-inline">

@@ -3,22 +3,28 @@ import axios from 'axios'
 import Rents from './rents.vue'
 import { onMounted, ref } from 'vue';
 import { reactive } from 'vue';
-axios.defaults.baseURL = 'http://localhost:8000';
+// axios.defaults.baseURL = 'http://localhost:8000/api/';
 axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
 axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 axios.defaults.withCredentials = true
 var cars = ref([])
-let user = JSON.parse(localStorage.getItem('user'))
+let user = {
+	username:'demo',
+	password:'demo',
+	is_staff:false,
+}
 
 let auth = JSON.parse(localStorage.getItem('auth'))
-// const getHeader = async ()=>{
-// 	console.log(localStorage.getItem('header'))
-// 	authHeader = localStorage.getItem('header')
-// }
+
+const getUser = async ()=>{
+	if (JSON.parse(localStorage.getItem('user')) != null){
+		user = JSON.parse(localStorage.getItem('user'))
+	}
+}
 const rentCar = async (car_id) => {
 	try{
 
-		await axios.post('/cars/rent/', {
+		await axios.post('api/cars/rent/', {
 			auth:{
 			username:auth.username,
 			password:auth.password
@@ -33,7 +39,7 @@ const rentCar = async (car_id) => {
 const getCars = async ()=>{
 	try{
 		const response = await axios.get(
-			'/cars/', {
+			'api/cars/', {
 		auth:{
 			username:auth.username,
 			password:auth.password
@@ -52,7 +58,7 @@ const getCars = async ()=>{
 }
 
 const deleteCar= async (id) =>{
-	await axios.delete('/cars/' + id,{
+	await axios.delete('api/cars/' + id,{
 		auth:{
 			username:auth.username,
 			password:auth.password
@@ -62,6 +68,7 @@ const deleteCar= async (id) =>{
 }
 onMounted(()=>{
 	getCars();
+	getUser();
 	// getHeader();
 })
 </script>

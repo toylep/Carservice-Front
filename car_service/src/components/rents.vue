@@ -4,11 +4,19 @@ import { onMounted, ref } from 'vue'
 axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
 axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 const authHeader = JSON.parse(localStorage.getItem('header'))
-const user = JSON.parse(localStorage.getItem('user'))
-const rents = ref(null)
+let user = {
+	username:'demo',
+	password:'demo',
+	is_staff:false,
+}
+const rents = ref([])
 const loading = ref(true)
 const error = ref(null)
-
+const getUser = async ()=>{
+	if (JSON.parse(localStorage.getItem('user')) != null){
+		user = JSON.parse(localStorage.getItem('user'))
+	}
+}
 const getRents = async () => {
 	try {
 		const response = await axios.get(
@@ -32,7 +40,8 @@ const deleteRents = async (rent_id) =>{
 
 onMounted(() => {
 	if (user.username) {
-		getRents()
+		getRents();
+		getUser();
 	}
 })
 </script>

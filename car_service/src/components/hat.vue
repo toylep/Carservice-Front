@@ -1,11 +1,6 @@
-<script>
+<script setup>
 import loginwWindow from './loginwWindow.vue';
-export default{
-    name:'hat',
-    components:{
-    loginwWindow,
-    }
-}
+
 </script>
 <template>
 <div>

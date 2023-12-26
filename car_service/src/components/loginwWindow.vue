@@ -1,25 +1,24 @@
 <script setup>
 import axios from 'axios'
-import { ref } from 'vue'
 const userHolder = {
-	username: ref(''),
-	name: ref(''),
-	password: ref(''),
-	email: ref(''),
+	username: '',
+	name: '',
+	password: '',
+	email: '',
 	is_staff: false,
 	balance: 0,
 }
 
 const authHolder = {
-	username: ref(''),
-	password: ref(''),
+	username: '',
+	password: '',
 }
 
 const regUser = async () => {
 	try {
 		
 		console.log(userHolder)
-		await axios.post('http://localhost:8000/users/reg/', userHolder)
+		await axios.post('api/users/reg/', userHolder)
 	} catch (error) {
 		console.error('Error registering user:', error)
 	}
@@ -31,9 +30,9 @@ const authUser = async () => {
 		)
 		
 		// localStorage.setItem('authData', JSON.stringify({authData}))
-		console.log(`http://localhost:8000/users/get/${authHolder.username}`)
+		console.log(`api/users/get/${authHolder.username}`)
 		const response = await axios.get(
-			`http://localhost:8000/users/get/${authHolder.username}`
+			`api/users/get/${authHolder.username}`
 		)
 		const userData = response.data;
 		console.log(userData);
@@ -92,7 +91,7 @@ const authUser = async () => {
 										class="form-control"
 										id="exampleInputUsername"
 										placeholder="Username"
-										v-model="authHolder.username.value"
+										v-model="authHolder.username"
 									/>
 								</div>
 								<div class="form-group">
@@ -102,7 +101,7 @@ const authUser = async () => {
 										class="form-control"
 										id="exampleInputPassword1"
 										placeholder="Password"
-										v-model="authHolder.password.value"
+										v-model="authHolder.password"
 									/>
 								</div>
 								<!-- ... Other form elements ... -->
@@ -160,7 +159,7 @@ const authUser = async () => {
 										class="form-control"
 										id="exampleInputName"
 										placeholder="Username"
-										v-model="userHolder.name.value"
+										v-model="userHolder.name"
 									/>
 								</div>
 								<div class="form-group">
@@ -169,7 +168,7 @@ const authUser = async () => {
 										class="form-control"
 										id="exampleInputUsername"
 										placeholder="Ваш username"
-										v-model="userHolder.username.value"
+										v-model="userHolder.username"
 									/>
 								</div>
 								<div class="form-group">
@@ -178,7 +177,7 @@ const authUser = async () => {
 										class="form-control"
 										id="exampleInputEmail"
 										placeholder="Username"
-										v-model="userHolder.email.value"
+										v-model="userHolder.email"
 									/>
 								</div>
 								<div class="form-group">
@@ -188,7 +187,7 @@ const authUser = async () => {
 										class="form-control"
 										id="exampleInputPassword"
 										placeholder="Password"
-										v-model="userHolder.password.value"
+										v-model="userHolder.password"
 									/>
 									<!-- ... Rest of the form elements for registration ... -->
 								</div>
