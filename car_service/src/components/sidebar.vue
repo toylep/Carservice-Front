@@ -2,21 +2,41 @@
 import axios from 'axios'
 import mainbody from './mainbody.vue'
 import AdminModal from './adminModal.vue'
-import { onMounted, ref } from 'vue';
-let user = ref(JSON.parse(localStorage.getItem('user'))).value
+import { onBeforeMount, ref } from 'vue';
+
+let user = {
+	username:'Не авторизован',
+	first_name:'Не авторизован',
+	balance: 0.0,
+	is_staff:false,
+}
+let auth = {
+	username : 'Не авторизован',
+	password : 'Не авторизован'
+}
+const getUserAndAuth = async ()=>{
+	user = JSON.parse(localStorage.getItem('user'))
+	auth = JSON.parse(localStorage.getItem('auth'))
+}
 let categories = ref([])
 const get_categories = async () => {
+	console.log(' sidebar user')
+	console.log(user)
 	try {
-		const response = await axios.get('cars/category/')
-		response.data.forEach(element => {
-			categories.value.unshift(element)
-		});
+		const response = await axios.get('api/cars/category/')
+		response.data.forEach((el)=>
+		categories.value.unshift(el)
+		)
 	} catch (error) {
 		console.error('Error fetching categories:', error)
 	}
 }
-onMounted(() => {
-	get_categories()
+const getCarsByCategory = async (cat_id)=>{
+	response =await axios.get('/api/cars/category/'+cat_id)
+}
+onBeforeMount(() => {
+	getUserAndAuth();
+	get_categories();
 })
 </script>
 
@@ -42,10 +62,12 @@ onMounted(() => {
 							<li class="nav-item">
 								<span href="#" class="nav-link align-middle px-0" style="color: white;">
 									<i class="fs-4 bi-house"></i>
-									<h5 class="ms-1 d-none d-sm-inline" :key="user">{{ user.username }}</h5>
+									<h5 class="ms-1 d-none d-sm-inline" >{{ user.username }}</h5>
 								</span>
+								<h6 class="ms-1 d-none d-sm-inline">Ваш баланс: {{ user.balance }} $</h6>
 								<a href="#" class="nav-link align-middle px-0"></a>
 							</li>
+						
 
 							<li>
 								<a data-bs-toggle="collapse" class="nav-link px-0 align-middle">
@@ -68,7 +90,7 @@ onMounted(() => {
 										>
 										<li>
 											<span class="d-none d-sm-inline">
-												<a class="modal-title" href="#" :key="category.id">{{category.name}}</a>
+												<span class="modal-title" href="#" :key="category.id" @click="getCarsByCategory(category.id)">{{category.name}}</span>
 											</span>
 											<hr/>
 										</li>

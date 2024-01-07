@@ -1,9 +1,22 @@
 <script setup>
 
 import axios from 'axios'
-import { ref } from 'vue'
-
-const auth = JSON.parse(localStorage.getItem('auth'))
+import { onBeforeMount, ref } from 'vue'
+import getCars from './mainbody.vue'
+let user = {
+	username:'Не авторизован',
+	first_name:'Не авторизован',
+	balance: 0.0,
+	is_staff:false,
+}
+let auth = {
+	username : 'Не авторизован',
+	password : 'Не авторизован'
+}
+const getUserAndAuth = async ()=>{
+	user = JSON.parse(localStorage.getItem('user'))
+	auth = JSON.parse(localStorage.getItem('auth'))
+}
 const carHolder = {
     mark: '',
 	model: '',
@@ -13,9 +26,10 @@ const carHolder = {
 }
 let categories = []
 const addCar = async ()=>{
+	getUserAndAuth();
 	try{
-		console.log(carHolder)
-		await axios.post('/cars/',carHolder,
+		console.log(user)
+		await axios.post('/api/cars/',carHolder,
 		{
 			auth:{
 				username:auth.username,
@@ -24,10 +38,13 @@ const addCar = async ()=>{
 		}
 		)
 	}catch(err){
-		console.log('Машина не создается')
+		alert('У вас нет прав админа')
 	}
+
 }
-const user = JSON.parse(localStorage.getItem('user')) ? JSON.parse(localStorage.getItem('user')) : []
+onBeforeMount(()=>{
+getUserAndAuth()
+})
 </script>
 
 <template>

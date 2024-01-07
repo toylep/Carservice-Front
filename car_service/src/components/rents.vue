@@ -3,37 +3,51 @@ import axios from 'axios'
 import { onMounted, ref } from 'vue'
 axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
 axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-const authHeader = JSON.parse(localStorage.getItem('header'))
-const user = JSON.parse(localStorage.getItem('user'))
-const rents = ref(null)
-const loading = ref(true)
-const error = ref(null)
+let user = {
+	username:'Не авторизован',
+	first_name:'Не авторизован',
+	balance: 0.0,
+	is_staff:false,
+}
+let auth = {
+	username : 'Не авторизован',
+	password : 'Не авторизован'
+}
+const getUserAndAuth = async ()=>{
+	user = JSON.parse(localStorage.getItem('user'))
+	auth = JSON.parse(localStorage.getItem('auth'))
+}
+const rents = ref([])
 
 const getRents = async () => {
+	getUserAndAuth();
 	try {
 		const response = await axios.get(
-			`/cars/rent/user/${user.username}`,{
-				headers:{
-				authHeader,
-			},
-			data: carHolder
+			`/api/cars/rent/user/${user.username}`,
+			{
+				auth:{
+					username:auth.username,
+					password:auth.password,
+				}
 			}
+			
 		)
-		rents.value = response.data
+		console.log(response.data)
+		response.data.forEach((el)=>{
+			rents.value.unshift(el)
+		})
 	} catch (err) {
 		error.value = err.message || 'Error fetching data'
-	} finally {
-		loading.value = false
-	}
+	} 
 }
 const deleteRents = async (rent_id) =>{
-	axios.delete('/cars/rent/'+rent_id)
+	await axios.delete('/api/cars/rent/'+rent_id)
 }
 
 onMounted(() => {
-	if (user.username) {
-		getRents()
-	}
+	getUserAndAuth();
+	getRents();
+	
 })
 </script>
 
@@ -62,7 +76,7 @@ onMounted(() => {
 					<p class="card-text" style="color: white">
 						Арендовано до {{ rent.end_date }}
 					</p>
-					<a @click="rentDelete(rent.id)" class="btn btn-primary">Отменить покупку</a>
+					<a @click="deleteRents(rent.id)" class="btn btn-primary">Отменить покупку</a>
 				</div>
 			</div>
 		</div>
