@@ -1,7 +1,10 @@
 <script setup>
 import axios from 'axios'
-import { ref } from 'vue'
 const userHolder = {
+	username: '',
+	name: '',
+	password: '',
+	email: '',
 	username: '',
 	name: '',
 	password: '',
@@ -11,6 +14,8 @@ const userHolder = {
 }
 
 const authHolder = {
+	username: '',
+	password: '',
 	username: '',
 	password: '',
 }
@@ -90,6 +95,7 @@ const authUser = async () => {
 										id="exampleInputUsername"
 										placeholder="Username"
 										v-model="authHolder.username"
+										v-model="authHolder.username"
 									/>
 								</div>
 								<div class="form-group">
@@ -99,6 +105,7 @@ const authUser = async () => {
 										class="form-control"
 										id="exampleInputPassword1"
 										placeholder="Password"
+										v-model="authHolder.password"
 										v-model="authHolder.password"
 									/>
 								</div>
@@ -158,6 +165,7 @@ const authUser = async () => {
 										id="exampleInputName"
 										placeholder="Username"
 										v-model="userHolder.name"
+										v-model="userHolder.name"
 									/>
 								</div>
 								<div class="form-group">
@@ -166,6 +174,7 @@ const authUser = async () => {
 										class="form-control"
 										id="exampleInputUsername"
 										placeholder="Ваш username"
+										v-model="userHolder.username"
 										v-model="userHolder.username"
 									/>
 								</div>
@@ -176,6 +185,7 @@ const authUser = async () => {
 										id="exampleInputEmail"
 										placeholder="Username"
 										v-model="userHolder.email"
+										v-model="userHolder.email"
 									/>
 								</div>
 								<div class="form-group">
@@ -185,6 +195,7 @@ const authUser = async () => {
 										class="form-control"
 										id="exampleInputPassword"
 										placeholder="Password"
+										v-model="userHolder.password"
 										v-model="userHolder.password"
 									/>
 									<!-- ... Rest of the form elements for registration ... -->

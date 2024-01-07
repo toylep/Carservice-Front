@@ -86,7 +86,7 @@ onBeforeMount(() => {
 								<div id="home-collapse">
 									<hr/>
 									<ul class="collapse show nav flex-column ms-1" id="submenu1" data-bs-parent="#submenu2"
-										v-for="category in categories" 
+										v-for="category in categories.value" 
 										>
 										<li>
 											<span class="d-none d-sm-inline">
