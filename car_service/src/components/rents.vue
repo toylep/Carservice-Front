@@ -37,7 +37,7 @@ const getRents = async () => {
 			rents.value.unshift(el)
 		})
 	} catch (err) {
-		error.value = err.message || 'Error fetching data'
+		console.log('Error fetching data')
 	} 
 }
 const deleteRents = async (rent_id) =>{

@@ -92,7 +92,6 @@ const deleteCar = async (id) => {
 onBeforeMount(() => {
 	getUserAndAuth();
 	getCars();
-	getUser();
 	// getHeader();
 })
 
