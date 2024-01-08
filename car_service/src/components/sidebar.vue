@@ -31,7 +31,7 @@ const get_categories = async () => {
 	console.log(' sidebar user')
 	console.log(user)
 	try {
-		const response = await axios.get('api/cars/category/')
+		const response = await axios.get('/api/cars/category/')
 		response.data.forEach((el)=>
 		categories.value.unshift(el)
 		)
