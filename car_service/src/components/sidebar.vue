@@ -15,8 +15,13 @@ let auth = {
 	password : 'Не авторизован'
 }
 const getUserAndAuth = async ()=>{
-	user = JSON.parse(localStorage.getItem('user'))
-	auth = JSON.parse(localStorage.getItem('auth'))
+	try{
+		user = JSON.parse(localStorage.getItem('user'))
+		auth = JSON.parse(localStorage.getItem('auth'))
+	} catch(err){
+		console.log('no users')
+
+	}
 }
 let categories = ref([])
 const get_categories = async () => {
@@ -30,12 +35,15 @@ const get_categories = async () => {
 	} catch (error) {
 		console.error('Error fetching categories:', error)
 	}
+	finally{
+		categories = []
+	}
 }
 const getCarsByCategory = async (cat_id)=>{
 	response =await axios.get('/api/cars/category/'+cat_id)
 }
 onBeforeMount(() => {
-	getUserAndAuth();
+	// getUserAndAuth();
 	get_categories();
 })
 </script>
