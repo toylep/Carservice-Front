@@ -16,11 +16,14 @@ let auth = {
 }
 const getUserAndAuth = async ()=>{
 	try{
-		user = JSON.parse(localStorage.getItem('user'))
-		auth = JSON.parse(localStorage.getItem('auth'))
+		if (!(JSON.parse(localStorage.getItem('user'))===null)){
+			user = JSON.parse(localStorage.getItem('user'))
+		}
+		if (!(JSON.parse(localStorage.getItem('auth'))===null)){
+			auth = JSON.parse(localStorage.getItem('auth'))
+		}
 	} catch(err){
 		console.log('no users')
-
 	}
 }
 let categories = ref([])
@@ -43,7 +46,7 @@ const getCarsByCategory = async (cat_id)=>{
 	response =await axios.get('/api/cars/category/'+cat_id)
 }
 onBeforeMount(() => {
-	// getUserAndAuth();
+	getUserAndAuth();
 	get_categories();
 })
 </script>

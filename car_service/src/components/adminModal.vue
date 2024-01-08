@@ -14,8 +14,16 @@ let auth = {
 	password : 'Не авторизован'
 }
 const getUserAndAuth = async ()=>{
-	user = JSON.parse(localStorage.getItem('user'))
-	auth = JSON.parse(localStorage.getItem('auth'))
+	try{
+		if (!(JSON.parse(localStorage.getItem('user'))===null)){
+			user = JSON.parse(localStorage.getItem('user'))
+		}
+		if (!(JSON.parse(localStorage.getItem('auth'))===null)){
+			auth = JSON.parse(localStorage.getItem('auth'))
+		}
+	} catch(err){
+		console.log('no users')
+	}
 }
 const carHolder = {
     mark: '',
