@@ -19,7 +19,8 @@ export const useRentStorage = defineStore('rentStore',{
                 )
                 this.rents = response.data
             } catch (err) {
-                alert('Не получилось получить данные о ваших арендах')
+                if (!(auth.username==='Не авторизован'))
+                    alert('Не получилось получить данные о ваших арендах')
             } 
         }
     }

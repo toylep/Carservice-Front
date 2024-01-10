@@ -12,27 +12,25 @@ const rentStorage = ref(useRentStorage())
 let monthCount = 0
 const rentCar = async (car) => {
 	try {
-			if(monthCount!=0){
-				console.log(monthCount * car.category.price)
-			await axios.post('/api/cars/rent/', {
-				car: car.id,
-				client: userStorage.value.user.id,
-				cost: monthCount * car.category.price
-			}, {
-				auth: {
-					username: userStorage.value.auth.username,
-					password: userStorage.value.auth.password
-				},
-
-			})
-		}
-		else alert('Нельзя арендовывать на 0 месяцев :/')
+			if (!(userStorage.value.user.username==='Не авторизован')){
+				if(monthCount!=0){
+					console.log(monthCount * car.category.price)
+				var response = await axios.post('/api/cars/rent/', {
+					car: car.id,
+					client: userStorage.value.user.id,
+					cost: monthCount * car.category.price
+				}, {
+					auth: {
+						username: userStorage.value.auth.username,
+						password: userStorage.value.auth.password
+					},
+					})
+				}
+				else alert('Нельзя арендовывать на 0 месяцев :/')
+	} else alert('Прежде чем арендовать авторизуйтесь ;)')
 	} catch (err) {
 		console.log(err)
-		if (err.response.status===400){
-			alert('Эта машина уже арендована')
-		}
-		else alert('У вас недостаточно средств')
+		alert('У вас недостаточно средств')
 	}
 	carsStorage.value.setCarsFromServer(userStorage.value.auth)
 	rentStorage.value.setRentsFromServer(userStorage.value.auth)

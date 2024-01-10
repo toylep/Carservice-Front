@@ -14,12 +14,8 @@ export const useCarStorage = defineStore('carStore',{
         async setCarsFromServer(auth){
             try {
                 const response = await axios.get(
-                    '/api/cars/list', {
-                    auth: {
-                        username: auth.username,
-                        password: auth.password
-                    }
-                })
+                    '/api/cars/list'
+                    )
                 this.cars = response.data
             } catch (err){
                 alert('Нет соединения с сервером :(')

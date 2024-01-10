@@ -21,9 +21,10 @@ const get_categories = async () => {
 
 
 onBeforeMount(() => {
-	
-	useUserStorage().setUser(JSON.parse(localStorage.getItem('user')))
-	useUserStorage().setAuth(JSON.parse(localStorage.getItem('auth')))
+	if (!(JSON.parse(localStorage.getItem('user')) === null)){
+		useUserStorage().setUser(JSON.parse(localStorage.getItem('user')))
+		useUserStorage().setAuth(JSON.parse(localStorage.getItem('auth')))
+	}
 	get_categories();
 })
 
