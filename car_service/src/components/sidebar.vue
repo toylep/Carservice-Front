@@ -3,52 +3,30 @@ import axios from 'axios'
 import mainbody from './mainbody.vue'
 import AdminModal from './adminModal.vue'
 import { onBeforeMount, ref } from 'vue';
+import {useUserStorage} from '../storages/UserStorage'
+import {useCarStorage} from '../storages/CarStorages'
 
-let user = {
-	username:'Не авторизован',
-	first_name:'Не авторизован',
-	balance: 0.0,
-	is_staff:false,
-}
-let auth = {
-	username : 'Не авторизован',
-	password : 'Не авторизован'
-}
-const getUserAndAuth = async ()=>{
-	try{
-		if (!(JSON.parse(localStorage.getItem('user'))===null)){
-			user = JSON.parse(localStorage.getItem('user'))
-		}
-		if (!(JSON.parse(localStorage.getItem('auth'))===null)){
-			auth = JSON.parse(localStorage.getItem('auth'))
-		}
-	} catch(err){
-		console.log('no users')
-	}
-}
+const carStorage = ref(useCarStorage())
+const userStorage = ref(useUserStorage())
 let categories = ref([])
+
 const get_categories = async () => {
-	console.log(' sidebar user')
-	console.log(user)
 	try {
 		const response = await axios.get('/api/cars/category/')
-		response.data.forEach((el)=>
-		categories.value.unshift(el)
-		)
+		categories.value =  response.data
 	} catch (error) {
-		console.error('Error fetching categories:', error)
-	}
-	finally{
-		categories = []
+		console.error('Error fetching categories:')
 	}
 }
-const getCarsByCategory = async (cat_id)=>{
-	response =await axios.get('/api/cars/category/'+cat_id)
-}
+
+
 onBeforeMount(() => {
-	getUserAndAuth();
+	
+	useUserStorage().setUser(JSON.parse(localStorage.getItem('user')))
+	useUserStorage().setAuth(JSON.parse(localStorage.getItem('auth')))
 	get_categories();
 })
+
 </script>
 
 <template>
@@ -61,64 +39,53 @@ onBeforeMount(() => {
 							class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
 							<span class="fs-5 d-none d-sm-inline">Menu</span>
 						</a>
-						<ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
-							id="menu">
-							<li class="nav-item">
-								<span href="#" class="nav-link align-middle px-0" style="color: white;">
-									<i class="fs-4 bi-house"></i>
-									<h5 class="ms-1 d-none d-sm-inline" v-if="user.is_staff">Админский режим</h5>
-								</span>
-								<a href="#" class="nav-link align-middle px-0"></a>
-							</li>
-							<li class="nav-item">
-								<span href="#" class="nav-link align-middle px-0" style="color: white;">
-									<i class="fs-4 bi-house"></i>
-									<h5 class="ms-1 d-none d-sm-inline" >{{ user.username }}</h5>
-								</span>
-								<h6 class="ms-1 d-none d-sm-inline">Ваш баланс: {{ user.balance }} $</h6>
-								<a href="#" class="nav-link align-middle px-0"></a>
-							</li>
-						
+							<ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
+								id="menu">
+								<li class="nav-item">
+									<span href="#" class="nav-link align-middle px-0" style="color: white;">
+										<i class="fs-4 bi-house"></i>
+										<h5 class="ms-1 d-none d-sm-inline" v-if="userStorage.user.is_staff">Админский режим</h5>
+									</span>
+									<a href="#" class="nav-link align-middle px-0"></a>
+								</li>
+								<li class="nav-item">
+									<span href="#" class="nav-link align-middle px-0" style="color: white;">
+										<i class="fs-4 bi-house"></i>
+										<h5 class="ms-1 d-none d-sm-inline">{{ userStorage.user.username }}</h5>
+									</span>
+									<h6 class="ms-1 d-none d-sm-inline">Ваш баланс: {{ userStorage.user.balance }} $</h6>
+									<a href="#" class="nav-link align-middle px-0"></a>
+								</li>
+							
 
-							<li>
-								<a data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-									<h4 class="fs-4 bi-speedometer2"></h4>
-									<AdminModal />
-								</a>
-							</li>
-							<li class="nav-item">
-								<h4 class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" 
-									data-bs-toggle="collapse"
-									data-bs-target="#home-collapse"
-									aria-expanded="true"
-									style="color: white;">
-									Категории
-								</h4>
-								<div id="home-collapse">
+								<li>
+									<a data-bs-toggle="collapse" class="nav-link px-0 align-middle">
+										<h4 class="fs-4 bi-speedometer2"></h4>
+										<AdminModal />
+									</a>
+								</li>
+								<li class="nav-item">
+									<h5 class="ms-1 d-none d-sm-inline"
+										data-bs-toggle="collapse"
+										data-bs-target="#home-collapse"
+										aria-expanded="true"
+										style="color: white;">
+										Категории
+									</h5>
+								</li>
+								<li class="nav-item" v-for="cat in categories">
 									<hr/>
-									<ul class="collapse show nav flex-column ms-1" id="submenu1" data-bs-parent="#submenu2"
-										v-for="category in categories.value" 
-										>
-										<li>
-											<span class="d-none d-sm-inline">
-												<span class="modal-title" href="#" :key="category.id" @click="getCarsByCategory(category.id)">{{category.name}}</span>
-											</span>
-											<hr/>
-										</li>
-										
-									</ul>
-								</div>
-
-							</li>
-							<hr />
-							<li>
-
-								<!-- Inside the <ul> with id="submenu1" -->
-
-							</li>
-						</ul>
+									<div >
+										<a 
+										class="ms-1 d-none d-sm-inline"
+										@click="carStorage.setCarsFromServerWithCategory(cat.id)" 
+										>{{ cat.name }}</a>
+									</div>
+								</li>
+							</ul>
 						<hr />
 					</div>
+					
 				</div>
 				<div>
 					<mainbody />

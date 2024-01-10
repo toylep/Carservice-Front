@@ -1,30 +1,11 @@
 <script setup>
 
 import axios from 'axios'
-import { onBeforeMount, ref } from 'vue'
-import getCars from './mainbody.vue'
-let user = {
-	username:'Не авторизован',
-	first_name:'Не авторизован',
-	balance: 0.0,
-	is_staff:false,
-}
-let auth = {
-	username : 'Не авторизован',
-	password : 'Не авторизован'
-}
-const getUserAndAuth = async ()=>{
-	try{
-		if (!(JSON.parse(localStorage.getItem('user'))===null)){
-			user = JSON.parse(localStorage.getItem('user'))
-		}
-		if (!(JSON.parse(localStorage.getItem('auth'))===null)){
-			auth = JSON.parse(localStorage.getItem('auth'))
-		}
-	} catch(err){
-		console.log('no users')
-	}
-}
+import { useCarStorage } from '../storages/CarStorages';
+import { useUserStorage } from '../storages/UserStorage';
+import { ref } from 'vue';
+const carsStorage = ref(useCarStorage())
+const userStorage = ref(useUserStorage())
 const carHolder = {
     mark: '',
 	model: '',
@@ -34,30 +15,28 @@ const carHolder = {
 }
 let categories = []
 const addCar = async ()=>{
-	getUserAndAuth();
 	try{
-		console.log(user)
 		await axios.post('/api/cars/',carHolder,
 		{
 			auth:{
-				username:auth.username,
-				password:auth.password,
+				username:userStorage.value.auth.username,
+				password:userStorage.value.auth.password,
 			},
-		}
-		)
+		})
+		.then(res=>res.data)
+		.then(data=>carsStorage.value.setCarsFromServer(userStorage.value.auth))
 	}catch(err){
 		alert('У вас нет прав админа')
+		console.log(err)
 	}
 
 }
-onBeforeMount(()=>{
-getUserAndAuth()
-})
+
 </script>
 
 <template>
     <div>
-        <h5 v-if="user.is_staff===true"
+        <h5 v-if="userStorage.user.is_staff===true"
         class="ms-1 d-none d-sm-inline"
         aria-current="page"
         data-bs-toggle="modal"

@@ -1,13 +1,11 @@
 <script setup>
 import axios from 'axios'
+import { useUserStorage } from '../storages/UserStorage';
+import { ref } from 'vue';
+const userStorage = ref(useUserStorage())
 const userHolder = {
 	username: '',
 	name: '',
-	password: '',
-	email: '',
-	username: '',
-	name: '',
-	password: '',
 	email: '',
 	is_staff: false,
 	balance: 0,
@@ -16,32 +14,30 @@ const userHolder = {
 const authHolder = {
 	username: '',
 	password: '',
-	username: '',
-	password: '',
 }
 
 const regUser = async () => {
 	try {
-		
 		console.log(userHolder)
 		await axios.post('/api/users/reg/', userHolder)
 	} catch (error) {
 		console.error('Error registering user:', error)
 	}
 }
+
 const authUser = async () => {
 	try {
 		
-		console.log('authuser')
 		const response = await axios.get(
 			'/api/users/get/'+authHolder.username
-		)
-		const userData = response.data;
-		console.log(userData);
-		
+			)
+		const userData = response.data;		
 		localStorage.setItem('user', JSON.stringify(userData));
 		localStorage.setItem('auth', JSON.stringify(authHolder));
-		console.log(authHolder)
+		// location.reload()
+		userStorage.value.setUser(JSON.parse(localStorage.getItem('user')))
+		userStorage.value.setAuth(JSON.parse(localStorage.getItem('auth')))
+
 
 
 	} catch (error) {
@@ -108,7 +104,7 @@ const authUser = async () => {
 									/>
 								</div>
 								<!-- ... Other form elements ... -->
-								<button href="#" 
+								<button href="/" 
 								type="submit" 
 								class="btn btn-primary"
 								data-bs-target="#login"

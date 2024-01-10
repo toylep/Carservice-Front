@@ -1,83 +1,48 @@
 <script setup>
 import axios from 'axios'
-import { onMounted, ref } from 'vue'
-axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
-axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
-let user = {
-	username:'Не авторизован',
-	first_name:'Не авторизован',
-	balance: 0.0,
-	is_staff:false,
-}
-let auth = {
-	username : 'Не авторизован',
-	password : 'Не авторизован'
-}
-const getUserAndAuth = async ()=>{
-	user = JSON.parse(localStorage.getItem('user'))
-	auth = JSON.parse(localStorage.getItem('auth'))
-}
-const rents = ref([])
+import { onBeforeMount, ref } from 'vue'
+import { useUserStorage } from '../storages/UserStorage';
+import { useRentStorage } from '../storages/RentStorage';
+import { useCarStorage } from '../storages/CarStorages';
+const carsStorage = ref(useCarStorage())
+const rentStorage = ref(useRentStorage())
+const userStorage = ref(useUserStorage())
+var rents = ref([])
 
-const getRents = async () => {
-	getUserAndAuth();
-	try {
-		const response = await axios.get(
-			`/api/cars/rent/user/${user.username}`,
-			{
-				auth:{
-					username:auth.username,
-					password:auth.password,
-				}
-			}
-			
-		)
-		console.log(response.data)
-		response.data.forEach((el)=>{
-			rents.value.unshift(el)
-		})
-	} catch (err) {
-		console.log('Error fetching data')
-	} 
-}
 const deleteRents = async (rent_id) =>{
 	await axios.delete('/api/cars/rent/'+rent_id)
+	rentStorage.value.setRentsFromServer(userStorage.value.auth)
+	carsStorage.value.setCarsFromServer(userStorage.value.auth)
 }
 
-onMounted(() => {
-	getUserAndAuth();
-	getRents();
-	
+onBeforeMount(() => {
+	rentStorage.value.setRentsFromServer(userStorage.value.auth)
 })
 </script>
 
 <template>
 	<div style="margin-top: 10px">
-		<div class="card-header bg-dark" style="color: white; margin-top: 10px">
-			Ваши аренды
-		</div>
-		<div style="color: white" v-if="loading">Loading...</div>
-		<div style="color: white" v-if="error">
-			Похоже у вас еще нет Аренд...
-		</div>
-		<div v-else-if="rents && rents.length === 0">У вас пока нет аренд</div>
-		<div v-else-if="rents">
-			<div
-				class="card bg-dark"
-				style="margin-top: 10px"
-				v-for="rent in rents"
-				:key="rent.id"
-			>
-				<div class="card-header" style="color: white">
-					{{ rent.car.mark }} {{ rent.car.model }}
-				</div>
-				<div class="card-body">
-					<h5 class="card-title" style="color: white">Арендовано вами</h5>
-					<p class="card-text" style="color: white">
-						Арендовано до {{ rent.end_date }}
-					</p>
-					<a @click="deleteRents(rent.id)" class="btn btn-primary">Отменить покупку</a>
-				</div>
+			<div class="card-header bg-dark" style="color: white; margin-top: 10px">
+				Ваши аренды
+			</div>
+			<div v-if="rentStorage.rents && rentStorage.rents.length === 0">У вас пока нет аренд</div>
+			<div v-else-if="rentStorage.rents">
+				<div
+					class="card bg-dark"
+					style="margin-top: 10px"
+					v-for="rent in rentStorage.rents"
+					:key="rent.id"
+				>
+					<div class="card-header" style="color: white">
+						{{ rent.car.mark }} {{ rent.car.model }}
+					</div>
+					<div class="card-body">
+						<h5 class="card-title" style="color: white">Арендовано вами</h5>
+						<p class="card-text" style="color: white">
+							Арендовано до {{ rent.end_date }}
+						</p>
+						<a @click="deleteRents(rent.id)" class="btn btn-primary">Отменить покупку</a>
+					</div>
 			</div>
 		</div>
 	</div>

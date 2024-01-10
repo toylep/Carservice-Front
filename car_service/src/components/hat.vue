@@ -1,27 +1,18 @@
 <script setup>
 import axios from 'axios';
 import loginwWindow from './loginwWindow.vue';
+import { useUserStorage } from '../storages/UserStorage';
+import { ref } from 'vue';
 let balance=0
-let user = {
-	username:'Не авторизован',
-	first_name:'Не авторизован',
-	balance: 0.0,
-	is_staff:false,
-}
-let auth = {
-	username : 'Не авторизован',
-	password : 'Не авторизован'
-}
-const getUserAndAuth = async ()=>{
-	user = JSON.parse(localStorage.getItem('user'))
-	auth = JSON.parse(localStorage.getItem('auth'))
-}
+let userStorage = ref(useUserStorage())
 const addBalance = async ()=>{
-  getUserAndAuth();
-  await axios.patch('/api/users/'+user.id,{
-    balance:user.balance+balance
+  await axios.patch('/api/users/'+userStorage.value.user.id,{
+    balance:userStorage.value.user.balance+balance
   })
+  await userStorage.value.setUserFromServer()
+  alert('Баланс пополнен')
 }
+
 </script>
 <template>
   <div>
@@ -44,9 +35,14 @@ const addBalance = async ()=>{
           </li>
           <li class="nav-item">
             <form>
-              <a class="nav-link" @click="addBalance">Пополнить баланс</a> 
-              <input type="number" v-model="balance">
+              <input 
+              type="number" v-model="balance"
+              style="width: 100px;"
+              >
             </form>
+          </li>
+          <li>
+            <a class="nav-link" @click="addBalance">Пополнить баланс</a> 
           </li>
 
         </div>
