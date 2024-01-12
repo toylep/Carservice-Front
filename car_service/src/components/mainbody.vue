@@ -66,7 +66,7 @@ const deleteCar = async (id) => {
 		<h3 style="color:white">
 			Удаление и изменение 
 		</h3>
-		<div class="row">
+		<div class="row" v-if="userStorage.user.is_staff">
 			<div class="col-sm">
 				<CarCreateFormVue></CarCreateFormVue>
 			</div>
