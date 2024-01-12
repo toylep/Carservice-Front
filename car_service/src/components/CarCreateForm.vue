@@ -14,14 +14,19 @@ const carHolder = {
     picture: '',
 }
 let categories = []
+const file = ref(null)
 const addCar = async ()=>{
 	try{
+        console.log(carHolder.picture)
 		await axios.post('/api/cars/',carHolder,
 		{
 			auth:{
 				username:userStorage.value.auth.username,
 				password:userStorage.value.auth.password,
 			},
+            headers: {
+                "Content-Type": "multipart/form-data"
+            },
 		})
 		.then(res=>res.data)
 		.then(data=>carsStorage.value.setCarsFromServer(userStorage.value.auth))
@@ -31,30 +36,15 @@ const addCar = async ()=>{
 	}
 
 }
-
+const changePic = (event)=>{
+    carHolder.picture = event.target.files[0]
+}
 </script>
 
 <template>
-    <div>
-        <h5 v-if="userStorage.user.is_staff===true"
-        class="ms-1 d-none d-sm-inline"
-        aria-current="page"
-        data-bs-toggle="modal"
-        data-bs-target="#addCar"
-        >Добавить машину
-	</h5>
-
 		<div>
 			<form @submit.prevent="addCar">
-				<div
-					class="modal fade"
-					id="addCar"
-					data-bs-backdrop="static"
-					data-bs-keyboard="false"
-					tabindex="-1"
-					aria-labelledby="staticBackdropLabel"
-					aria-hidden="true"
-				>
+				<div>
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">
@@ -69,6 +59,7 @@ const addCar = async ()=>{
 								></button>
 							</div>
 							<div class="modal-body">
+                                
 								<div class="form-group">
 									<label for="exampleInputCarMark">Введите марку</label>
 									<input
@@ -100,10 +91,10 @@ const addCar = async ()=>{
 									<label for="exampleInputCarPic">Добавьте картинку</label>
 									<input
 										type="file"
-										accept="audio/*|video/*|video/x-m4v|video/webm|video/x-ms-wmv|video/x-msvideo|video/3gpp|video/flv|video/x-flv|video/mp4|video/quicktime|video/mpeg|video/ogv|.ts|.mkv|image/*|image/heic|image/heif"
 										class="form-control"
 										id="exampleInputCarPic"
-										v-on:change="carHolder.picture"
+                                        ref="file"
+										v-on:change="changePic"
 									/>
 								</div>
 								<div class="form-group">
@@ -118,8 +109,6 @@ const addCar = async ()=>{
 								action="/" 
 								class="btn btn-primary" 
 								type="submit"
-								data-bs-target="#addCar"
-								data-bs-toggle="modal"
 								@click="addCar"
 								>
 									Добавить
@@ -130,6 +119,5 @@ const addCar = async ()=>{
 				</div>
 			</form>
 		</div>
-    </div>
 
 </template>

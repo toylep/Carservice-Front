@@ -1,11 +1,12 @@
 <script setup>
-
-import axios from 'axios'
+import axios from 'axios';
 import { useCarStorage } from '../storages/CarStorages';
 import { useUserStorage } from '../storages/UserStorage';
-import { ref } from 'vue';
-const carsStorage = ref(useCarStorage())
+import { onBeforeMount, ref } from 'vue';
+import { defineProps } from 'vue';
+const props = defineProps(['car'])
 const userStorage = ref(useUserStorage())
+const carStorage = ref(useCarStorage())
 const carHolder = {
     mark: '',
 	model: '',
@@ -13,63 +14,48 @@ const carHolder = {
 	category:'',
     picture: '',
 }
-let categories = []
-const addCar = async ()=>{
-	try{
-		await axios.post('/api/cars/',carHolder,
-		{
-			auth:{
-				username:userStorage.value.auth.username,
-				password:userStorage.value.auth.password,
-			},
-		})
-		.then(res=>res.data)
-		.then(data=>carsStorage.value.setCarsFromServer(userStorage.value.auth))
-	}catch(err){
-		alert('У вас нет прав админа')
-		console.log(err)
-	}
+let id = 0
+const carChange = async () =>{
+    console.log(carHolder.picture)
+    const repsonce = await axios.put('/api/cars/'+id,carHolder,{
+        auth: userStorage.value.auth,
+        headers: {
+                "Content-Type": "multipart/form-data"
+            },
 
+    })
+    carStorage.value.setCarsFromServer( userStorage.value.auth)
+}
+
+const changePic = (event)=>{
+    carHolder.picture = event.target.files[0]
+    console.log(carHolder.picture)
 }
 
 </script>
-
 <template>
-    <div>
-        <h5 v-if="userStorage.user.is_staff===true"
-        class="ms-1 d-none d-sm-inline"
-        aria-current="page"
-        data-bs-toggle="modal"
-        data-bs-target="#addCar"
-        >Добавить машину
-	</h5>
-
-		<div>
-			<form @submit.prevent="addCar">
-				<div
-					class="modal fade"
-					id="addCar"
-					data-bs-backdrop="static"
-					data-bs-keyboard="false"
-					tabindex="-1"
-					aria-labelledby="staticBackdropLabel"
-					aria-hidden="true"
-				>
+			<form @submit.prevent="carChange">
+				<div>
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="staticBackdropLabel">
-                                    Добавление машины
+								<h5 class="modal-title" id="staticBackdropLabel1">
+                                    Измененение машины
 								</h5>
-								<button
-									type="button"
-									class="btn-close"
-									data-bs-dismiss="modal"
-									aria-label="Close"
-								></button>
 							</div>
+                            
 							<div class="modal-body">
-								<div class="form-group">
+                                <div class="form-group">
+									<label for="exampleInputCarMark">Введите id</label>
+									<input
+                                        type="number"
+										class="form-control"
+										id="exampleInputCarMark"
+										placeholder="1 например"
+										v-model="id"
+									/>
+								</div>
+                                <div class="form-group">
 									<label for="exampleInputCarMark">Введите марку</label>
 									<input
 										class="form-control"
@@ -99,11 +85,10 @@ const addCar = async ()=>{
                                 <div class="form-group">
 									<label for="exampleInputCarPic">Добавьте картинку</label>
 									<input
-										type="file"
-										accept="audio/*|video/*|video/x-m4v|video/webm|video/x-ms-wmv|video/x-msvideo|video/3gpp|video/flv|video/x-flv|video/mp4|video/quicktime|video/mpeg|video/ogv|.ts|.mkv|image/*|image/heic|image/heif"
+                                        type="file"
 										class="form-control"
 										id="exampleInputCarPic"
-										v-on:change="carHolder.picture"
+										v-on:change="changePic"
 									/>
 								</div>
 								<div class="form-group">
@@ -118,18 +103,13 @@ const addCar = async ()=>{
 								action="/" 
 								class="btn btn-primary" 
 								type="submit"
-								data-bs-target="#addCar"
-								data-bs-toggle="modal"
-								@click="addCar"
+								@click="carChange"
 								>
-									Добавить
+									Изменить
 								</button>
 							</div>
 						</div>
 					</div>
 				</div>
 			</form>
-		</div>
-    </div>
-
 </template>

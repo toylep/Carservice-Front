@@ -1,11 +1,12 @@
 <script setup>
-
-import axios from 'axios'
+import axios from 'axios';
 import { useCarStorage } from '../storages/CarStorages';
 import { useUserStorage } from '../storages/UserStorage';
-import { ref } from 'vue';
-const carsStorage = ref(useCarStorage())
+import { onBeforeMount, ref } from 'vue';
+import { defineProps } from 'vue';
+const props = defineProps(['car'])
 const userStorage = ref(useUserStorage())
+const carStorage = ref(useCarStorage())
 const carHolder = {
     mark: '',
 	model: '',
@@ -13,42 +14,37 @@ const carHolder = {
 	category:'',
     picture: '',
 }
-let categories = []
-const addCar = async ()=>{
-	try{
-		await axios.post('/api/cars/',carHolder,
-		{
-			auth:{
-				username:userStorage.value.auth.username,
-				password:userStorage.value.auth.password,
-			},
-		})
-		.then(res=>res.data)
-		.then(data=>carsStorage.value.setCarsFromServer(userStorage.value.auth))
-	}catch(err){
-		alert('У вас нет прав админа')
-		console.log(err)
-	}
-
+const carChange = async () =>{
+    // console.log(car)
+    const repsonce = await axios.put('/api/cars/'+carStorage.value.change_id,carHolder,{
+        auth: userStorage.value.auth
+    })
+    carStorage.value.setCarsFromServer( userStorage.value.auth)
 }
-
+const setCar = ()=>{
+    carStorage.value.setChangeId(props.car)
+    console.log(carStorage.value.change_id)
+}
+// onBeforeMount(()=>{
+//     console.log(props.car)
+// })
 </script>
-
 <template>
     <div>
-        <h5 v-if="userStorage.user.is_staff===true"
-        class="ms-1 d-none d-sm-inline"
+        <button v-if="userStorage.user.is_staff===true"
+        class="btn btn-warning"
         aria-current="page"
         data-bs-toggle="modal"
-        data-bs-target="#addCar"
-        >Добавить машину
-	</h5>
+        data-bs-target="#changeCar"
+        @click="setCar"
+        >Изменить машину 
+        </button>
 
 		<div>
-			<form @submit.prevent="addCar">
+			<form @submit.prevent="carChange">
 				<div
 					class="modal fade"
-					id="addCar"
+					id="changeCar"
 					data-bs-backdrop="static"
 					data-bs-keyboard="false"
 					tabindex="-1"
@@ -58,7 +54,7 @@ const addCar = async ()=>{
 					<div class="modal-dialog">
 						<div class="modal-content">
 							<div class="modal-header">
-								<h5 class="modal-title" id="staticBackdropLabel">
+								<h5 class="modal-title" id="staticBackdropLabel1">
                                     Добавление машины
 								</h5>
 								<button
@@ -97,13 +93,12 @@ const addCar = async ()=>{
 									/>
 								</div>
                                 <div class="form-group">
-									<label for="exampleInputCarPic">Добавьте картинку</label>
+									<label for="exampleInputCarPic">Добавьте урлу картинки</label>
 									<input
-										type="file"
-										accept="audio/*|video/*|video/x-m4v|video/webm|video/x-ms-wmv|video/x-msvideo|video/3gpp|video/flv|video/x-flv|video/mp4|video/quicktime|video/mpeg|video/ogv|.ts|.mkv|image/*|image/heic|image/heif"
 										class="form-control"
 										id="exampleInputCarPic"
-										v-on:change="carHolder.picture"
+										placeholder="url"
+										v-model="carHolder.picture"
 									/>
 								</div>
 								<div class="form-group">
@@ -118,11 +113,11 @@ const addCar = async ()=>{
 								action="/" 
 								class="btn btn-primary" 
 								type="submit"
-								data-bs-target="#addCar"
+								data-bs-target="#changedCar"
 								data-bs-toggle="modal"
-								@click="addCar"
+								@click="carChange"
 								>
-									Добавить
+									Изменить
 								</button>
 							</div>
 						</div>
@@ -131,5 +126,4 @@ const addCar = async ()=>{
 			</form>
 		</div>
     </div>
-
 </template>

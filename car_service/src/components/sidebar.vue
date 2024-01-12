@@ -1,7 +1,6 @@
 <script setup>
 import axios from 'axios'
 import mainbody from './mainbody.vue'
-import AdminModal from './adminModal.vue'
 import { onBeforeMount, ref } from 'vue';
 import {useUserStorage} from '../storages/UserStorage'
 import {useCarStorage} from '../storages/CarStorages'
@@ -56,14 +55,6 @@ onBeforeMount(() => {
 									</span>
 									<h6 class="ms-1 d-none d-sm-inline">Ваш баланс: {{ userStorage.user.balance }} $</h6>
 									<a href="#" class="nav-link align-middle px-0"></a>
-								</li>
-							
-
-								<li>
-									<a data-bs-toggle="collapse" class="nav-link px-0 align-middle">
-										<h4 class="fs-4 bi-speedometer2"></h4>
-										<AdminModal />
-									</a>
 								</li>
 								<li class="nav-item">
 									<h5 class="ms-1 d-none d-sm-inline"

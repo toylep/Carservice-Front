@@ -2,7 +2,8 @@ import {defineStore} from 'pinia'
 import axios from 'axios'
 export const useCarStorage = defineStore('carStore',{
     state: () => ({
-        cars:[]
+        cars:[],
+        change_id:0
     }),
     actions:{
         setCars(cars){
@@ -30,6 +31,10 @@ export const useCarStorage = defineStore('carStore',{
                 alert('Нет соединения с сервером :(')
                 console.log(err)
             }
+        },
+        setChangeId(id){
+            alert('сhanged')
+            this.change_id=id
         }
 
     }

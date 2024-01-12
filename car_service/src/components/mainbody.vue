@@ -5,7 +5,8 @@ import { onBeforeMount, ref } from 'vue';
 import {useCarStorage} from '../storages/CarStorages'
 import { useUserStorage } from '../storages/UserStorage';
 import { useRentStorage } from '../storages/RentStorage';
-
+import CarCreateFormVue	 from './CarCreateForm.vue'
+import CarChangeFormVue from './CarChangeForm.vue'
 const carsStorage = ref(useCarStorage())
 const userStorage = ref(useUserStorage())
 const rentStorage = ref(useRentStorage())
@@ -61,14 +62,28 @@ const deleteCar = async (id) => {
 
 </script>
 <template>
+	<div class="container">
+		<h3 style="color:white">
+			Удаление и изменение 
+		</h3>
+		<div class="row">
+			<div class="col-sm">
+				<CarCreateFormVue></CarCreateFormVue>
+			</div>
+			<div class="col-sm">
+				<CarChangeFormVue></CarChangeFormVue>
+			</div>
+		</div>
+	</div>
 	<div>
-
 		<head>
 			<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
 				integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
 				crossorigin="anonymous" />
 		</head>
-
+		<div class="container">
+			<h3 style="color: white;">Список машин</h3>
+		</div>
 		<div class="wrapper d-flex flex-wrap">
 			<div class="card list flex" v-for="car in carsStorage.cars"
 				:style="{ width: '18rem', borderColor: 'black', margin: '10px' }">
