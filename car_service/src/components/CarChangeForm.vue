@@ -103,7 +103,6 @@ const changePic = (event)=>{
 								action="/" 
 								class="btn btn-primary" 
 								type="submit"
-								@click="carChange"
 								>
 									Изменить
 								</button>

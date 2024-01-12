@@ -32,7 +32,7 @@ const addCar = async ()=>{
 		.then(data=>carsStorage.value.setCarsFromServer(userStorage.value.auth))
 	}catch(err){
 		alert('У вас нет прав админа')
-		console.log(err)
+		console.err(err)
 	}
 
 }
@@ -109,7 +109,6 @@ const changePic = (event)=>{
 								action="/" 
 								class="btn btn-primary" 
 								type="submit"
-								@click="addCar"
 								>
 									Добавить
 								</button>
